@@ -334,7 +334,7 @@ def main(ip_circ, input_circ, gtf, ip_bam, input_bam, out, genomeFasta, s=2, p=3
              circRNAs[k].counts[1] * 10 ** 6 / host['input'].sum(), circRNAs[k].ratio,
              circRNAs[k].pvalue, circRNAs[k].label]
         )
-        o2.write('>%s\n' % k)
+        #o2.write('>%s\n' % k)
         #o2.write('%s\n' % circRNAs[k].junction)
 
         with open(out + '.html', 'w') as f, open(

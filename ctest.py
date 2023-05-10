@@ -180,7 +180,8 @@ class circRNA(object):
                     self.sequence = sequence
                 else:
                     self.sequence = ''.join([dic[x] for x in sequence][::-1])
-            except:
+            except Exception as e:
+                print("The error is", e)
                 print(self.chr, self.start, self.end)
                 sys.exit()
             return self.sequence

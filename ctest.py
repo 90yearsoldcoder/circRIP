@@ -226,6 +226,7 @@ def merge(lis):
 
 
 def featureCount(gtf, ip_bam, s, p, input_bam, out, SE=False):
+    print("Start featureCount")
     if SE:
         cmd = 'featureCounts -a %s -o %s -t exon -g gene_name  -s %s --splitOnly  -T %s %s %s' \
               % (gtf, '%s.count' % out, s, p, input_bam, ip_bam)
@@ -312,9 +313,11 @@ def main(ip_circ, input_circ, gtf, ip_bam, input_bam, out, genomeFasta, s=2, p=3
     res = []
     genome = pysam.FastaFile(genomeFasta)
     for k in circRNAs.keys():
+        print(k, circRNAs[k].chr, circRNAs[k].start, circRNAs[k].end, circRNAs[k].counts)
         circRNAs[k].annotation(genes, False)
         circRNAs[k].getSequence(genome)
         circRNAs[k].getJunction(50)
+        print( circRNAs[k].anno[0])
         p1 = get_ctest_gene(circRNAs[k].counts[0], circRNAs[k].counts[1], circRNAs[k].anno[0], host, R)
         p2 = get_ctest_genome(circRNAs[k].counts[0], circRNAs[k].counts[1], host, R)
         circRNAs[k].pvalue = get_min(p1, p2)
@@ -344,5 +347,5 @@ def main(ip_circ, input_circ, gtf, ip_bam, input_bam, out, genomeFasta, s=2, p=3
                 if '{{placeholder}}' in i:
                     i = 'var data = %s;\n' % str(res)
                 f.write(i)
-
+    genome.close()
     o.close()

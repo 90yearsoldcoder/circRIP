@@ -313,11 +313,12 @@ def main(ip_circ, input_circ, gtf, ip_bam, input_bam, out, genomeFasta, s=2, p=3
     #o2 = open('%s.junction.fa' % out, 'w')
     res = []
     genome = pysam.FastaFile(genomeFasta)
+    print("total Number of circRNAs: ", len(circRNAs))
     for k in circRNAs.keys():
         print(k, circRNAs[k].chr, circRNAs[k].start, circRNAs[k].end, circRNAs[k].counts)
         circRNAs[k].annotation(genes, False)
-        circRNAs[k].getSequence(genome)
-        circRNAs[k].getJunction(50)
+        # circRNAs[k].getSequence(genome)
+        # circRNAs[k].getJunction(50)
         print( circRNAs[k].anno[0])
         p1 = get_ctest_gene(circRNAs[k].counts[0], circRNAs[k].counts[1], circRNAs[k].anno[0], host, R)
         p2 = get_ctest_genome(circRNAs[k].counts[0], circRNAs[k].counts[1], host, R)
@@ -326,9 +327,15 @@ def main(ip_circ, input_circ, gtf, ip_bam, input_bam, out, genomeFasta, s=2, p=3
             circRNAs[k].ratio = (circRNAs[k].counts[0] * 10 ** 6 / host['ip'].sum()) / (circRNAs[k].counts[1] * 10 ** 6 / host['input'].sum())
         else:
             circRNAs[k].ratio = np.inf
+
         circRNAs[k].label = 'non-enriched'
         if circRNAs[k].ratio >= ratio and circRNAs[k].pvalue <= pvalue:
             circRNAs[k].label = 'enriched'
+        
+        
+        tmp_result = '\t'.join([k, circRNAs[k].anno[0],circRNAs[k].label]) + '\n'
+        print(tmp_result)
+
         o.write('\t'.join([k, circRNAs[k].anno[0], str(int(circRNAs[k].counts[0])),
                            str(int(circRNAs[k].counts[1])), str(circRNAs[k].counts[0] * 10 ** 6 / host['ip'].sum()),
                            str(circRNAs[k].counts[1] * 10 ** 6 / host['input'].sum()), str(circRNAs[k].ratio),
